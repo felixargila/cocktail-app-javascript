@@ -8,6 +8,14 @@ export const routes = [
     },
   },
   {
+    path: '/category/:category',
+    name: 'category',
+    component: 'category-page',
+    action: async () => {
+      await import('../pages/category/category-page.js');
+    },
+  },
+  {
     path: '/favorite-cocktails',
     name: 'favorite-cocktails',
     component: 'favorite-cocktails-page',
