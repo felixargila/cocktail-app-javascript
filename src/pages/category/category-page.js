@@ -4,6 +4,7 @@ import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './category-page.css.js';
 import '../../components/page-layout/page-layout.js';
+import '../../components/page-header/page-header.js';
 
 export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -58,10 +59,27 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   render() {
     return html`
       <page-layout>
-        <h1>Category Page</h1>
+        ${this._headerTpl} 
         <p>Category: ${this._currentCategory}</p>
       </page-layout>
     `;
+  }
+
+  get _headerTpl() {
+    return html`
+      <page-header
+        navigateToHome=""
+        .likedCocktailsCount="${this._likedCocktails?.size || 0}"
+        headerTitle="Dummy category title"
+        @navigate-to="${(ev) => this._navigateTo(ev, ev.detail.destination, ev.detail.params)}"
+      ></page-header>
+    `;
+  }
+
+  _navigateTo(ev, destination, params = {}) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.navigate(destination, params);
   }
 
   onPageLeave() {

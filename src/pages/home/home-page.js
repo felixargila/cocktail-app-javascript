@@ -28,8 +28,16 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
   render() {
     return html`
       <page-layout>
-        <h1>Welcome to OpenCells!</h1>
+        <div class="home-header">
+          ${this._homeHeaderTpl}
+        </div>
       </page-layout>
+    `;
+  }
+
+  get _homeHeaderTpl() {
+    return html`
+      <h2>Welcome to OpenCells!</h2>
     `;
   }
 }

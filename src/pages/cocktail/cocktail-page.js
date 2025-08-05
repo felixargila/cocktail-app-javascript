@@ -4,6 +4,7 @@ import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './cocktail-page.css.js';
 import '../../components/page-layout/page-layout.js';
+import '../../components/page-header/page-header.js';
 
 export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -49,10 +50,26 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   render() {
     return html`
       <page-layout>
-        <h1>Cocktail Page</h1>
+        ${this._headerTpl}
         <p>Cocktail: ${this._currentCocktail}</p>
       </page-layout>
     `;
+  }
+
+  get _headerTpl() {
+    return html`
+      <page-header
+        navigateToHome=""
+        .likedCocktailsCount="${this._likedCocktails?.size || 0}"
+        headerTitle="Dummy Cocktail Title"
+        @navigate-to="${(ev) => this._handleNavigateTo(ev.detail.destination, ev.detail.category)}"
+      >
+      </page-header>
+    `;
+  }
+
+  _handleNavigateTo(destination, category) {
+    this.pageController.navigate(destination, { category });
   }
 
   onPageLeave() {

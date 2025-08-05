@@ -4,6 +4,7 @@ import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './favorite-cocktails-page.css.js';
 import '../../components/page-layout/page-layout.js';
+import '../../components/page-header/page-header.js';
 
 export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -29,9 +30,29 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitEle
   render() {
     return html`
       <page-layout>
-        <h1>Favorite Cocktails Page</h1>
+        ${this._headerTpl}
+        <p class="no-favorites">No favorite cocktails yet</p>
       </page-layout>
     `;
+  }
+
+  get _headerTpl() {
+    return html`
+      <page-header
+        navigateToHome=""
+        headerTitle="Favorite cocktails"
+        @navigate-to="${(ev) => this._navigateTo(ev, ev.detail.destination, ev.detail.params)}"
+      ></page-header>
+    `;
+  }
+
+  _navigateTo(ev, destination, params = {}) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.pageController.navigate(
+      destination,
+      params
+    );
   }
 
   onPageLeave() {
