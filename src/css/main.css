@@ -1,0 +1,38 @@
+/* @import url('./colors.css');
+@import url('./fonts.css');
+@import url('./material.css'); */
+
+html,
+body {
+  --border-radius-container: 0.5rem;
+  --border-radius-img: 0.25rem;
+
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--surface);
+  font-family: 'Roboto Serif', sans-serif;
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-style: normal;
+  color: var(--on-surface);
+}
+
+noscript {
+  display: block;
+  margin: 1em;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
