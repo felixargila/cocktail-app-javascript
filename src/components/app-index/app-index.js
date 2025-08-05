@@ -31,11 +31,17 @@ export class AppIndex extends LitElement {
     this.elementController = new ElementController(this);
     this._header = null;
     this._root = null;
+    this._likedCocktails = this._getLocalStorage();
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.elementController.subscribe('scroll', (data) => this._headerTransition(data));
+
+    this.elementController.publish('liked-cocktails', this._likedCocktails);
+    this.elementController.subscribe('liked-cocktails', (data) => {
+      this._setLocalStorage(data);
+    });
   }
 
   firstUpdated(props) {
@@ -92,6 +98,17 @@ export class AppIndex extends LitElement {
     this._root?.hasAttribute('color-scheme-dark')
       ? this._root?.removeAttribute('color-scheme-dark')
       : this._root?.setAttribute('color-scheme-dark', 'true');
+  }
+
+  _setLocalStorage(setItem) {
+    const arrayFromSet = Array.from(setItem);
+    const jsonData = JSON.stringify(arrayFromSet);
+    localStorage.setItem('_likedCocktails', jsonData);
+  }
+
+  _getLocalStorage() {
+    const jsonData = localStorage.getItem('_likedCocktails');
+    return jsonData ? new Set(JSON.parse(jsonData)) : new Set();
   }
 }
 

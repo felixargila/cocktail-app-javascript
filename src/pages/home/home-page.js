@@ -29,6 +29,7 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
     return {
       _randomCocktail: { type: Object },
       _categoriesList: { type: Array },
+      _likedCocktails: { type: Object },
     };
   }
 
@@ -36,6 +37,8 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
     super();
     this._layout = null;
     this._randomCocktail = null;
+    this._categoriesList = null;
+    this._likedCocktails = null;
   }
 
   connectedCallback() {
@@ -46,12 +49,16 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this.subscribe('categories', (data) => {
       this._categoriesList = data;
     });
+    this.subscribe('liked-cocktails', (data) => {
+      this._likedCocktails = data;
+    });
     this.requestUpdate();
   }
 
   disconnectedCallback() {
     this.unsubscribe('random-cocktail');
     this.unsubscribe('categories');
+    this.unsubscribe('liked-cocktails');
     super.disconnectedCallback();
   }
 
@@ -154,6 +161,8 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
           <md-outlined-icon-button
             aria-label="Add cocktail to favorite"
             toggle
+            @click="${(ev) =>
+              this._randomCocktail && this._addLikedCocktails(ev, this._randomCocktail)}"
             ?selected="${Boolean(
               this._likedCocktails
                 ? [...this._likedCocktails].find(item => item.idDrink === this._randomCocktail?.idDrink)
@@ -193,6 +202,25 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
     ev.preventDefault();
     ev.stopPropagation();
     this.navigate(destination, params);
+  }
+
+  _addLikedCocktails(ev, cocktail) {
+    if (!this._likedCocktails) {
+      return;
+    }
+    ev.target.selected
+      ? this._likedCocktails?.add(cocktail)
+      : this._delete(cocktail, this._likedCocktails);
+    this.publish('liked-cocktails', this._likedCocktails);
+    this.requestUpdate();
+  }
+
+  _delete(cocktail, set) {
+    for (const item of set) {
+      if (item.idDrink === cocktail.idDrink) {
+        set.delete(item);
+      }
+    }
   }
 
   onPageLeave() {

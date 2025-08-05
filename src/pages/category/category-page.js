@@ -24,6 +24,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     return {
       _currentCategory: { type: String },
       _cocktailsList: { type: Array },
+      _likedCocktails: { type: Object },
     };
   }
 
@@ -37,6 +38,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this._layout = null;
     this._currentCategory = null;
     this._cocktailsList = null;
+    this._likedCocktails = null;
     this.params = {};
   }
 
@@ -45,11 +47,15 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this.subscribe('categories', (data) => {
       this._categoriesList = data;
     });
-    console.log('[connectedCallback] _categoriesList:', this._categoriesList);
+    this.subscribe('liked-cocktails', (data) => {
+      this._likedCocktails = data;
+      this.requestUpdate();
+    });
   }
 
   disconnectedCallback() {
     this.unsubscribe('categories');
+    this.unsubscribe('liked-cocktails');
     super.disconnectedCallback();
   }
 
@@ -158,6 +164,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
                       md-outlined-icon-button
                       aria-label="Add receipe to favorite"
                       toggle
+                      @click="${(ev) => this._addLikedCocktails(ev, cocktail)}"
                       ?selected="${Boolean(
                         [...this._likedCocktails || []].find(item => item.idDrink === cocktail.idDrink),
                       )}"
@@ -184,6 +191,26 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     ev.preventDefault();
     ev.stopPropagation();
     this.navigate(destination, params);
+  }
+
+  async _addLikedCocktails(ev, cocktail) {
+    if (!this._likedCocktails) {
+      return;
+    }
+
+    ev.target.selected
+      ? this._likedCocktails?.add({...cocktail, strCategory: this._currentCategory?.strCategory || ''})
+      : this._delete(cocktail.idDrink, this._likedCocktails);
+    this.publish('liked-cocktails', this._likedCocktails);
+    this.requestUpdate();
+  }
+
+  _delete(id, set) {
+    for (const item of set) {
+      if (item.idDrink === id) {
+        set.delete(item);
+      }
+    }
   }
 
   onPageLeave() {
