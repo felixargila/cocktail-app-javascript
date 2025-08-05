@@ -1,12 +1,21 @@
-import mockedCocktailsFilteredByCategory from './filter-cocktails-by-category-mock.js';
+import { getConfig } from '@open-cells/core';
+
+const {
+  appConfig: {
+    cocktailsService: { basePath = undefined, userId = undefined, version = undefined } = {},
+  } = {},
+} = getConfig();
 
 // endpoint url: https://www.thecocktaildb.com/api/json/{version}/{user}/filter.php
-
-export async function getCocktailsByCategory() {
-  const data = await new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(mockedCocktailsFilteredByCategory);
-    }, 2000);
-  });
+function getFetchUrl(param, paramValue) {
+  const data = new URL(`${basePath}/${version}/${userId}/filter.php`);
+  if (param && paramValue) {
+    data.searchParams.set(param, paramValue);
+  }
   return data;
+}
+
+export async function getCocktailsByCategory(category) {
+  const data = await fetch(getFetchUrl('c', category));
+  return data.json();
 }

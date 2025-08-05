@@ -22,6 +22,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       pageController: { type: Object },
       _cocktailInstructions: { type: Array },
       _cocktail: { type: Object },
+      _likedCocktails: { type: Object },
       params: { type: Object },
     };
   }
@@ -31,12 +32,26 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this.pageController = new PageController(this);
     this._cocktailInstructions = [];
     this._cocktail = null;
+    this._likedCocktails = null;
     this._layout = null;
     this.params = {};
   }
 
   static get styles() {
     return [styles];
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    this.pageController.subscribe('liked-cocktails', (data) => {
+      this._likedCocktails = data;
+    });
+  }
+
+  disconnectedCallback() {
+    this.pageController.unsubscribe('liked-cocktails');
+    super.disconnectedCallback();
   }
 
   willUpdate(props) {
@@ -64,7 +79,10 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       this._cocktail = null;
       const cocktail = await getFullCocktailDetails(this.params.cocktailId);
       this._cocktail = cocktail.drinks[0];
-      console.log('[CocktailPage] Cocktail loaded:', this._cocktail);
+      // Actualizar instrucciones según el idioma actual después de cargar el cocktail
+      if (this._cocktail) {
+        this._updateInstructionsByLanguage();
+      }
       this.requestUpdate();
     }
   }
@@ -106,6 +124,10 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           <md-outlined-icon-button
             aria-label="${'Add to favorites'}"
             toggle
+            @click="${(ev) => this._cocktail && this._addLikedCocktails(ev, this._cocktail)}"
+            ?selected="${this._likedCocktails
+              ? Boolean([...this._likedCocktails].find(item => item.idDrink === this._cocktail?.idDrink))
+              : false}"
           >
             <md-icon>favorite</md-icon>
             <md-icon slot="selected" filled>favorite</md-icon>
@@ -155,10 +177,11 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           <h3>${'Instructions'}</h3>
           ${this._cocktailInstructions.map(instruction => html` <p>${instruction}</p> `)}
         </div>
+      </div>
     `;
   }
 
-    _linkToYoutube(strYoutube) {
+  _linkToYoutube(strYoutube) {
     return html`
       <a 
         class="youtube" 
@@ -175,6 +198,26 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   _handleNavigateTo(destination, category) {
     this.pageController.navigate(destination, { category });
+  }
+
+  _addLikedCocktails(ev, cocktail) {
+    if (!this._likedCocktails) {
+      return;
+    }
+    ev.target.selected
+      ? this._likedCocktails?.add(cocktail)
+      : this._delete(cocktail, this._likedCocktails);
+
+    this.pageController.publish('liked-cocktails', this._likedCocktails);
+    this.requestUpdate();
+  }
+
+  _delete(cocktail, set) {
+    for (const item of set) {
+      if (item.idDrink === cocktail.idDrink) {
+        set.delete(item);
+      }
+    }
   }
 
   _updateInstructionsByLanguage() {
