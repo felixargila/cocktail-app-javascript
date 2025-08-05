@@ -8,7 +8,7 @@ import { appConfig } from '../../config/app.config.js';
 startApp({
   routes,
   mainNode: 'app-content',
-  viewLimit: 2,
+  viewLimit: 1,
   persistentPages: [],
   appConfig,
   commonPages: []

@@ -3,6 +3,7 @@ import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './favorite-cocktails-page.css.js';
+import '../../components/page-layout/page-layout.js';
 
 export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -27,7 +28,9 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitEle
 
   render() {
     return html`
-      <h1>Favorite Cocktails Page</h1>
+      <page-layout>
+        <h1>Favorite Cocktails Page</h1>
+      </page-layout>
     `;
   }
 

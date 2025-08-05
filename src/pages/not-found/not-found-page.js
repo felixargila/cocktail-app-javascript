@@ -3,6 +3,7 @@ import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './not-found-page.css.js';
+import '../../components/page-layout/page-layout.js';
 
 export class NotFoundPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -27,7 +28,9 @@ export class NotFoundPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   render() {
     return html`
-      <h1>Not Found Page</h1>
+      <page-layout>
+        <h1>Not Found Page</h1>
+      </page-layout>
     `;
   }
 

@@ -3,6 +3,7 @@ import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './cocktail-page.css.js';
+import '../../components/page-layout/page-layout.js';
 
 export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -47,8 +48,10 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   render() {
     return html`
-      <h1>Cocktail Page</h1>
-      <p>Cocktail: ${this._currentCocktail}</p>
+      <page-layout>
+        <h1>Cocktail Page</h1>
+        <p>Cocktail: ${this._currentCocktail}</p>
+      </page-layout>
     `;
   }
 

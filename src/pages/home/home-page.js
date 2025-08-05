@@ -2,6 +2,7 @@ import { html, LitElement } from 'lit';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import { PageMixin } from '@open-cells/page-mixin';
 import styles from './home-page.css.js';
+import '../../components/page-layout/page-layout.js';
 
 export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -26,7 +27,9 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   render() {
     return html`
-      <h1>Welcome to OpenCells!</h1>
+      <page-layout>
+        <h1>Welcome to OpenCells!</h1>
+      </page-layout>
     `;
   }
 }

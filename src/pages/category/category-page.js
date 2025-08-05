@@ -3,6 +3,7 @@ import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './category-page.css.js';
+import '../../components/page-layout/page-layout.js';
 
 export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
   static get is() {
@@ -56,8 +57,10 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   render() {
     return html`
-      <h1>Category Page</h1>
-      <p>Category: ${this._currentCategory}</p>
+      <page-layout>
+        <h1>Category Page</h1>
+        <p>Category: ${this._currentCategory}</p>
+      </page-layout>
     `;
   }
 
