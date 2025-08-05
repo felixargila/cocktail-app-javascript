@@ -16,6 +16,14 @@ export const routes = [
     },
   },
   {
+    path: '/cocktail/:cocktailId',
+    name: 'cocktail',
+    component: 'cocktail-page',
+    action: async () => {
+      await import('../pages/cocktail/cocktail-page.js');
+    },
+  },
+  {
     path: '/favorite-cocktails',
     name: 'favorite-cocktails',
     component: 'favorite-cocktails-page',
