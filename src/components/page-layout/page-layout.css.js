@@ -39,6 +39,11 @@ export const styles = css`
     box-sizing: border-box;
   }
 
+  .footer-content {
+    width: 100%;
+    padding: 5rem 0 2rem;
+  }
+
   a {
     text-decoration: none;
     color: var(--primary);
@@ -48,9 +53,23 @@ export const styles = css`
     color: var(--on-surface-variant);
   }
 
+  /* 768px */
+  @media (min-width: 48rem) {
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
   /* 1024px */
   @media (min-width: 60rem) {
     .zone {
+      max-width: 58rem;
+      margin: 0 auto;
+    }
+
+    .footer-content {
       max-width: 58rem;
       margin: 0 auto;
     }
@@ -61,6 +80,10 @@ export const styles = css`
     .zone {
       max-width: 71.5rem;
     }
+
+    .footer-content {
+      max-width: 71.5rem;
+    }
   }
 
   /* DARK MODE */
@@ -69,7 +92,7 @@ export const styles = css`
       --on-surface-dark: #EAE2D4;
       --surface-dark: #16130B;
     }
-  }
+  } 
 
   :root[color-scheme-dark] {
     --on-surface-dark: #eae2d4;

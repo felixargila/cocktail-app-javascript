@@ -50,6 +50,27 @@ export class PageLayout extends LitElement {
             </div>
           </div>
         </div>
+
+        <div class="footer">
+          <div class="region">
+            <div class="zone">${this._footerTpl}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  get _footerTpl() {
+    return html`
+      <div class="footer-content">
+        <p>
+          Data provided by
+          <a href="https://www.themealdb.com/api.php" target="_blank">The Cocktail DB</a>
+        </p>
+        <p>
+          Made with ❤️ with
+          <a href="https://www.opencells.dev">Open Cells</a>
+        </p>
       </div>
     `;
   }
