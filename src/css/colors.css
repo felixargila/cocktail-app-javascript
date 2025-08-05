@@ -9,3 +9,17 @@ html {
   --outline: var(--outline-dark, #85736e);
   --header-gradient: var(--header-gradient-dark, rgba(255, 248, 240, 1));
 }
+
+/* DARK MODE */
+
+:root[color-scheme-dark] {
+  --primary-dark: #e2c46d;
+  --on-surface-dark: #eae2d4;
+  --on-surface-variant-dark: #cfc6b4;
+  --surface-container-dark: #2d2a21;
+  --surface-container-high-dark: #2d2a21;
+  --surface-container-highest-dark: #38342b;
+  --surface-dark: #16130b;
+  --outline-dark: #989080;
+  --header-gradient-dark: rgba(22, 19, 11, 1);
+}

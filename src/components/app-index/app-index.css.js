@@ -58,8 +58,14 @@ export default css`
     position: relative;
     padding: 1rem 0px;
   }
- 
+
   .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .header-actions {
     display: flex;
     align-items: center;
     gap: 1rem;

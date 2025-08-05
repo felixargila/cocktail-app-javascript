@@ -62,4 +62,17 @@ export const styles = css`
       max-width: 71.5rem;
     }
   }
+
+  /* DARK MODE */
+  @media (prefers-color-scheme: dark) {
+    :host {
+      --on-surface-dark: #EAE2D4;
+      --surface-dark: #16130B;
+    }
+  }
+
+  :root[color-scheme-dark] {
+    --on-surface-dark: #eae2d4;
+    --surface-dark: #16130b;
+  }
 `;
