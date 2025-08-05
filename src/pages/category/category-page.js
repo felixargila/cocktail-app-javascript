@@ -72,7 +72,11 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
         .likedCocktailsCount="${this._likedCocktails?.size || 0}"
         headerTitle="Dummy category title"
         @navigate-to="${(ev) => this._navigateTo(ev, ev.detail.destination, ev.detail.params)}"
-      ></page-header>
+      >
+        <p class="categories-description">
+            Category description goes here.
+        </p>
+      </page-header>
     `;
   }
 

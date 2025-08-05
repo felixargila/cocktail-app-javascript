@@ -5,4 +5,12 @@ export default css`
   :host {
     display: block;
   }
+
+  .page-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
 `;

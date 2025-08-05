@@ -3,6 +3,7 @@ import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './cocktail-page.css.js';
+import '@material/web/button/outlined-button.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
 
@@ -64,6 +65,24 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
         headerTitle="Dummy Cocktail Title"
         @navigate-to="${(ev) => this._handleNavigateTo(ev.detail.destination, ev.detail.category)}"
       >
+        <div class="page-header-actions">
+          <md-outlined-button
+            aria-label="${this._currentCocktail} category"
+            @click="${() =>
+              this._currentCocktail &&
+              this._handleNavigateTo('category', encodeURIComponent(this._currentCocktail.toLowerCase()))}"
+          >
+            ${this._currentCocktail || 'Unknown Category'}
+          </md-outlined-button>
+    
+          <md-outlined-icon-button
+            aria-label="${'Add to favorites'}"
+            toggle
+          >
+            <md-icon>favorite</md-icon>
+            <md-icon slot="selected" filled>favorite</md-icon>
+          </md-outlined-icon-button>
+        </div>
       </page-header>
     `;
   }
