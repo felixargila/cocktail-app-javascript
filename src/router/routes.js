@@ -8,6 +8,14 @@ export const routes = [
     },
   },
   {
+    path: '/favorite-cocktails',
+    name: 'favorite-cocktails',
+    component: 'favorite-cocktails-page',
+    action: async () => {
+      await import('../pages/favorite-cocktails/favorite-cocktails-page.js');
+    },
+  },
+  {
     path: '/not-found',
     name: 'not-found',
     notFound: true,
