@@ -1,9 +1,14 @@
-import { html, LitElement } from 'lit';
+import { html, LitElement, nothing } from 'lit';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { PageController } from '@open-cells/page-controller';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './cocktail-page.css.js';
+import { getFullCocktailDetails } from '../../services/http/index.js';
 import '@material/web/button/outlined-button.js';
+import '@material/web/icon/icon.js';
+import '@material/web/iconbutton/outlined-icon-button.js';
+import '@material/web/progress/circular-progress.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
 
@@ -14,13 +19,18 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   static get properties() {
     return {
-      _currentCocktail: { type: String }
+      pageController: { type: Object },
+      _cocktailInstructions: { type: Array },
+      _cocktail: { type: Object },
+      params: { type: Object },
     };
   }
 
   constructor() {
     super();
     this.pageController = new PageController(this);
+    this._cocktailInstructions = [];
+    this._cocktail = null;
     this._layout = null;
     this.params = {};
   }
@@ -31,28 +41,46 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   willUpdate(props) {
     super.willUpdate?.(props);
-    if (props.has('params')) {
-      this.setCocktail();
+    // Actualizar instrucciones cuando cambia el cocktail
+    if (props.has('_cocktail') && this._cocktail) {
+      this._updateInstructionsByLanguage();
     }
-    this.requestUpdate();
   }
 
   firstUpdated(props) {
     super.firstUpdated?.(props);
 
     this._layout = this.querySelector('page-layout');
-    this.requestUpdate();
   }
 
-  async setCocktail() {
-    this._currentCocktail = this.params.cocktailId ? decodeURIComponent(this.params.cocktailId) : '';
+  async updated(props) {
+    super.updated?.(props);
+
+    if (props.has('params') && this.params.cocktailId) {
+      if (this.params.cocktailId === props.get('params').cocktailId) {
+        return;
+      }
+
+      this._cocktail = null;
+      const cocktail = await getFullCocktailDetails(this.params.cocktailId);
+      this._cocktail = cocktail.drinks[0];
+      console.log('[CocktailPage] Cocktail loaded:', this._cocktail);
+      this.requestUpdate();
+    }
   }
 
   render() {
     return html`
       <page-layout>
-        ${this._headerTpl}
-        <p>Cocktail: ${this._currentCocktail}</p>
+        ${this._cocktail
+          ? html` ${this._headerTpl} ${this._cocktailTpl} `
+          : html`
+            <md-circular-progress
+              aria-label="${'Loading...'}"
+              value="0.5"
+              indeterminate
+            ></md-circular-progress>
+          `}
       </page-layout>
     `;
   }
@@ -62,17 +90,17 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       <page-header
         navigateToHome=""
         .likedCocktailsCount="${this._likedCocktails?.size || 0}"
-        headerTitle="Dummy Cocktail Title"
+        headerTitle="${ifDefined(this._cocktail?.strDrink)}"
         @navigate-to="${(ev) => this._handleNavigateTo(ev.detail.destination, ev.detail.category)}"
       >
         <div class="page-header-actions">
           <md-outlined-button
-            aria-label="${this._currentCocktail} category"
+            aria-label="${this._cocktail?.strCategory} category"
             @click="${() =>
-              this._currentCocktail &&
-              this._handleNavigateTo('category', encodeURIComponent(this._currentCocktail.toLowerCase()))}"
+              this._cocktail?.strCategory &&
+              this._handleNavigateTo('category', encodeURIComponent(this._cocktail?.strCategory.toLowerCase()))}"
           >
-            ${this._currentCocktail || 'Unknown Category'}
+            ${this._cocktail?.strCategory}
           </md-outlined-button>
     
           <md-outlined-icon-button
@@ -87,8 +115,75 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     `;
   }
 
+  get _cocktailTpl() {
+    return html`
+      <div class="cocktail-ingredients">
+        <div class="cocktail-img">
+          <img src="${this._cocktail?.strDrinkThumb || ''}" alt="" />
+        </div>
+
+        <div class="ingredients-list">
+          <h3>${'Ingredients'}</h3>
+          <ul>
+            ${this._cocktail
+              ? Object.keys(this._cocktail)
+                  .filter(
+                    (key) =>
+                      key.includes('strIngredient') && this._cocktail && this._cocktail[key],
+                  )
+                  .map(
+                    key => html`
+                      <li>
+                        <p>${this._cocktail ? this._cocktail[key] : nothing}</p>
+                        <p>
+                          ${this._cocktail
+                            ? this._cocktail[`strMeasure${key.split('strIngredient')[1]}`]
+                            : nothing}
+                        </p>
+                      </li>
+                    `,
+                  )
+              : nothing}
+          </ul>
+
+          ${this._cocktail?.strYoutube
+            ? this._linkToYoutube(this._cocktail.strYoutube)
+            : nothing}
+        </div>
+
+        <div class="cocktail-instructions">
+          <h3>${'Instructions'}</h3>
+          ${this._cocktailInstructions.map(instruction => html` <p>${instruction}</p> `)}
+        </div>
+    `;
+  }
+
+    _linkToYoutube(strYoutube) {
+    return html`
+      <a 
+        class="youtube" 
+        href="${strYoutube}" 
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="${this.t(i18nKeys.seeOnYouTube) || 'See recipe on YouTube'}"
+      >
+        <md-icon filled>smart_display</md-icon>
+        ${this.t(i18nKeys.seeOnYouTube) || 'See recipe on YouTube'}
+      </a>
+    `;
+  }
+
   _handleNavigateTo(destination, category) {
     this.pageController.navigate(destination, { category });
+  }
+
+  _updateInstructionsByLanguage() {
+    if (!this._cocktail) return;
+    
+    // Seleccionar las instrucciones según el idioma actual
+    let instructions = this._cocktail.strInstructions; // inglés por defecto
+    
+    this._cocktailInstructions = instructions.split('\n');
   }
 
   onPageLeave() {
