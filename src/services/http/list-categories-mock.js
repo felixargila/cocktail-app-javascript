@@ -1,0 +1,15 @@
+export default {
+  drinks: [
+    { strCategory: "Cocktail" },
+    { strCategory: "Ordinary Drink" },
+    { strCategory: "Punch / Party Drink" },
+    { strCategory: "Shake" },
+    { strCategory: "Other / Unknown" },
+    { strCategory: "Cocoa" },
+    { strCategory: "Shot" },
+    { strCategory: "Coffee / Tea" },
+    { strCategory: "Homemade Liqueur" },
+    { strCategory: "Beer" },
+    { strCategory: "Soft Drink" }
+  ]
+};
