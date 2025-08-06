@@ -1,6 +1,7 @@
 import { html, LitElement } from 'lit';
 import { map } from 'lit/directives/map.js';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
+import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
 import styles from './home-page.css.js';
 import '@material/web/button/outlined-button.js';
@@ -15,8 +16,9 @@ import {
   getRandomCocktail,
   getCategoriesList,
 } from '../../services/http/index.js';
+import i18nKeys from './home-page-i18n.js';
 
-export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
+export class HomePage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitElement))) {
   static get is() {
     return 'home-page';
   }
@@ -91,7 +93,7 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
             ? html`${this._bannerTpl}`
             : html`
                 <md-circular-progress
-                  aria-label="Loading..."
+                  aria-label=${this.t(i18nKeys.loading)}
                   value="0.5"
                   indeterminate
                 ></md-circular-progress>
@@ -99,12 +101,12 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
         </div>
 
         <div class="cocktails-categories">
-          <h3>Categories</h3>
+          <h3>${this.t(i18nKeys.categories.title)}</h3>
           ${this._categoriesList
             ? html`${this._categoriesTpl}`
             : html`
                 <md-circular-progress
-                  aria-label="Loading..."
+                  aria-label=${this.t(i18nKeys.loading)}
                   value="0.5"
                   indeterminate
                 ></md-circular-progress>
@@ -116,14 +118,14 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   get _homeHeaderTpl() {
     return html`
-      <h2>Welcome to Cells Cocktails. A very spirit app</h2>
+      <h2>${this.t(i18nKeys.title)}</h2>
       <md-outlined-button
-        aria-label="Favorite Cocktails"
+        aria-label=${this.t(i18nKeys.favoriteCocktails)}
         @click="${(ev) => this._navigateTo(ev, 'favorite-cocktails', {})}"
       >
         <md-icon filled slot="icon">favorite</md-icon>
         ${this._likedCocktails?.size}
-        <span class="md-outlined-button-text">Favorite cocktails</span>
+        <span class="md-outlined-button-text">${this.t(i18nKeys.favoriteCocktails)}</span>
       </md-outlined-button>
     `;
   }
@@ -139,7 +141,7 @@ export class HomePage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
       <div class="banner-text">
         <div class="banner-text-heading">
-          <p class="heading-h3">Daily special</p>
+          <p class="heading-h3">${this.t(i18nKeys.dailySpecial)}</p>
           <a
             class="cocktail-title"
             @click="${(ev) =>
