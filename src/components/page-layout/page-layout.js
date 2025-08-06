@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit';
+import { LocalizeMixin } from '@open-cells/localize';
 import { ElementController } from '@open-cells/element-controller';
 import { styles } from './page-layout.css.js';
+import i18nKeys from './page-layout-i18n.js';
 
-
-export class PageLayout extends LitElement {
+export class PageLayout extends LocalizeMixin(LitElement) {
   static get is() {
     return 'page-layout';
   }
@@ -64,11 +65,11 @@ export class PageLayout extends LitElement {
     return html`
       <div class="footer-content">
         <p>
-          Data provided by
+          ${this.t(i18nKeys.dataFrom)}
           <a href="https://www.themealdb.com/api.php" target="_blank">The Cocktail DB</a>
         </p>
         <p>
-          Made with ❤️ with
+          ${this.t(i18nKeys.madeWith)}
           <a href="https://www.opencells.dev">Open Cells</a>
         </p>
       </div>

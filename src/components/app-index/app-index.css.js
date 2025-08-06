@@ -59,6 +59,27 @@ export default css`
     padding: 1rem 0px;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .language-selector {
+    padding: 0.5rem;
+    border: 1px solid var(--outline);
+    border-radius: 4px;
+    background-color: var(--surface);
+    color: var(--on-surface);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .language-selector:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
   .header-logo {
     display: flex;
     align-items: center;
@@ -69,6 +90,21 @@ export default css`
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
+
+  .language-selector {
+    padding: 0.5rem;
+    border: 1px solid var(--outline, #ccc);
+    border-radius: 0.25rem;
+    background-color: var(--surface);
+    color: var(--on-surface);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .language-selector:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
 
   h1 {
@@ -83,7 +119,6 @@ export default css`
     color: var(--primary);
   }
 
-  /* 1024px */
   @media (min-width: 64rem) {
     header {
       display: flex;
@@ -97,7 +132,6 @@ export default css`
     }
   }
 
-  /* 1440px */
   @media (min-width: 90rem) {
     header {
       max-width: 71.5rem;

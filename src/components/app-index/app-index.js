@@ -1,5 +1,6 @@
 import { startApp } from '@open-cells/core';
 import { LitElement, html } from 'lit';
+import { LocalizeMixin } from '@open-cells/localize';
 import { ElementController } from '@open-cells/element-controller';
 import { routes } from '../../router/routes.js';
 import styles from './app-index.css.js';
@@ -7,6 +8,15 @@ import { appConfig } from '../../config/app.config.js';
 import '@open-cells/page-transitions/page-transition-head-styles.js';
 import '@material/web/iconbutton/outlined-icon-button.js';
 import '@material/web/icon/icon.js';
+import {
+  availableLanguages,
+  changeLanguage,
+  getCurrentLanguage,
+  initializeI18n
+} from '../../services/i18n/i18n-setup.js';
+
+// Inicializar i18n antes de arrancar la aplicación
+initializeI18n();
 
 startApp({
   routes,
@@ -17,7 +27,7 @@ startApp({
   commonPages: []
 });
 
-export class AppIndex extends LitElement {
+export class AppIndex extends LocalizeMixin(LitElement) {
   static get is() {
     return 'app-index';
   }
@@ -32,6 +42,7 @@ export class AppIndex extends LitElement {
     this._header = null;
     this._root = null;
     this._likedCocktails = this._getLocalStorage();
+    this._currentLanguage = 'en';
   }
 
   connectedCallback() {
@@ -42,6 +53,9 @@ export class AppIndex extends LitElement {
     this.elementController.subscribe('liked-cocktails', (data) => {
       this._setLocalStorage(data);
     });
+
+    // Establecer idioma inicial desde Open Cells
+    this._currentLanguage = getCurrentLanguage();
   }
 
   firstUpdated(props) {
@@ -66,10 +80,22 @@ export class AppIndex extends LitElement {
         <div class="header-content">
           <div class="header-logo">
             <md-icon>local_bar</md-icon>
-            <h1><a href="#!/">Cells Cocktails</a></h1>
+            <h1><a href="#!/">${this.t('appTitle')}</a></h1>
           </div>
 
           <div class="header-actions">
+            <!-- Selector de idioma -->
+            <select 
+              class="language-selector"
+              @change=${this._changeLanguage}
+              .value=${this._currentLanguage}
+            >
+              ${availableLanguages.map(lang => html`
+                <option value="${lang.code}" ?selected=${this._currentLanguage === lang.code}>
+                  ${lang.nativeName}
+                </option>
+              `)}
+            </select>
             <md-outlined-icon-button
               class="dark-mode"
               aria-label="DarkMode"
@@ -91,6 +117,21 @@ export class AppIndex extends LitElement {
       this._header?.classList.add('scrolled');
     } else {
       this._header?.classList.remove('scrolled');
+    }
+  }
+
+  _changeLanguage(event) {
+    const select = event.target;
+    const newLanguage = select.value;
+    
+    if (newLanguage !== this._currentLanguage) {
+      console.log(`🌍 Changing language from ${this._currentLanguage} to ${newLanguage}`);
+      
+      // Cambiar idioma usando el servicio de Open Cells
+      changeLanguage(newLanguage);
+      this._currentLanguage = newLanguage;
+      
+      // El LocalizeMixin se actualiza automáticamente gracias a updateWhenLocaleResourcesChange
     }
   }
 

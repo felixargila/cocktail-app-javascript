@@ -1,10 +1,12 @@
 import { html, LitElement, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { LocalizeMixin } from '@open-cells/localize';
 import '@material/web/button/outlined-button.js';
 import '@material/web/icon/icon.js';
 import { styles } from './page-header.css.js';
+import i18nKeys from './page-header-i18n.js';
 
-export class PageHeader extends LitElement {
+export class PageHeader extends LocalizeMixin(LitElement) {
   static styles = styles;
 
   static get properties() {
@@ -29,11 +31,11 @@ export class PageHeader extends LitElement {
             html`
               <li>
                 <md-outlined-button
-                  aria-label="Back to Home"
+                  aria-label="${ifDefined(this.t(i18nKeys.options.backToHome) || undefined)}"
                   @click="${(ev) => this._navigateTo(ev, 'home')}"
                 >
                   <md-icon filled slot="icon">arrow_back</md-icon>
-                  <span class="md-outlined-button-text">Back to Home</span>
+                  <span class="md-outlined-button-text">${this.t(i18nKeys.options.backToHome)}</span>
                 </md-outlined-button>
               </li>
             ` : nothing
@@ -43,13 +45,13 @@ export class PageHeader extends LitElement {
             html`
               <li>
                 <md-outlined-button
-                  aria-label="${ifDefined('Favorite cocktails' || undefined)}"
+                  aria-label="${ifDefined(this.t(i18nKeys.options.favoriteCocktails) || undefined)}"
                   href="#!/favorite-cocktails"
                   @click="${(ev) => this._navigateTo(ev, 'favorite-cocktails', {})}"
                 >
                   <md-icon filled slot="icon">favorite</md-icon>
                   ${this.likedCocktailsCount}
-                  <span class="md-outlined-button-text">Favorite cocktails</span>
+                  <span class="md-outlined-button-text">${this.t(i18nKeys.options.favoriteCocktails)}</span>
                 </md-outlined-button>
               </li>
             ` : nothing
