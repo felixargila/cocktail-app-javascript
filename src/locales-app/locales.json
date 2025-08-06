@@ -8,7 +8,8 @@
     "cells-cocktails-header-component-favorite-cocktails": "Favorite Cocktails",
     "cells-cocktails-home-page-title": "Welcome to Cells Cocktails. A very spirit app",
     "cells-cocktails-home-page-daily-special": "Daily Special",
-    "cells-cocktails-home-page-categories": "Categories"
+    "cells-cocktails-home-page-categories": "Categories",
+    "cells-cocktails-not-found-page-title": "Page Not Found"
   },
   "es": {
     "appTitle": "Cócteles Cells",
@@ -19,7 +20,8 @@
     "cells-cocktails-header-component-favorite-cocktails": "Cócteles Favoritos",
     "cells-cocktails-home-page-title": "Bienvenido a Cócteles Cells. Una app muy espirituosa",
     "cells-cocktails-home-page-daily-special": "Especial del Día",
-    "cells-cocktails-home-page-categories": "Categorías"
+    "cells-cocktails-home-page-categories": "Categorías",
+    "cells-cocktails-not-found-page-title": "Página No Encontrada"
   },
   "fr": {
     "appTitle": "Cocktails Cells",
@@ -30,6 +32,7 @@
     "cells-cocktails-header-component-favorite-cocktails": "Cocktails favoris",
     "cells-cocktails-home-page-title": "Bienvenue sur Recettes Cells. Une application très spiritueuse",
     "cells-cocktails-home-page-daily-special": "Spécial du Jour",
-    "cells-cocktails-home-page-categories": "Catégories"
+    "cells-cocktails-home-page-categories": "Catégories",
+    "cells-cocktails-not-found-page-title": "Page Non Trouvée"
   }
 }

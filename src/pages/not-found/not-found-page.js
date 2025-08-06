@@ -1,12 +1,14 @@
 import { html, LitElement } from 'lit';
 import { PageController } from '@open-cells/page-controller';
+import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import styles from './not-found-page.css.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
+import i18nKeys from './not-found-page-i18n.js';
 
-export class NotFoundPage extends PageTransitionsMixin(PageMixin(LitElement)) {
+export class NotFoundPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitElement))) {
   static get is() {
     return 'not-found-page';
   }
@@ -32,7 +34,7 @@ export class NotFoundPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       <page-layout>
         <page-header
           navigateToHome=""
-          headerTitle="Page Not Found"
+          .headerTitle=${this.t(i18nKeys.title)}
            @navigate-to="${(ev) => this._navigateTo(ev, ev.detail.destination, ev.detail.params)}"
         ></page-header>
       </page-layout>
