@@ -1,8 +1,9 @@
 import { html, LitElement, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { PageController } from '@open-cells/page-controller';
-import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
+import { LocalizeMixin } from '@open-cells/localize';
+import { PageMixin } from '@open-cells/page-mixin';
 import styles from './cocktail-page.css.js';
 import { getFullCocktailDetails } from '../../services/http/index.js';
 import '@material/web/button/outlined-button.js';
@@ -11,8 +12,12 @@ import '@material/web/iconbutton/outlined-icon-button.js';
 import '@material/web/progress/circular-progress.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
+import { 
+  getCurrentLanguage,  
+} from '../../services/i18n/i18n-setup.js';
+import i18nKeys from './cocktail-page-i18n.js';
 
-export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
+export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitElement))) {
   static get is() {
     return 'cocktail-page';
   }
@@ -23,6 +28,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       _cocktailInstructions: { type: Array },
       _cocktail: { type: Object },
       _likedCocktails: { type: Object },
+      _currentLanguage: { type: String },
       params: { type: Object },
     };
   }
@@ -34,6 +40,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this._cocktail = null;
     this._likedCocktails = null;
     this._layout = null;
+    this._currentLanguage = null;
     this.params = {};
   }
 
@@ -47,6 +54,8 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     this.pageController.subscribe('liked-cocktails', (data) => {
       this._likedCocktails = data;
     });
+    // Establecer idioma inicial
+    this._currentLanguage = getCurrentLanguage();
   }
 
   disconnectedCallback() {
@@ -56,6 +65,18 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
 
   willUpdate(props) {
     super.willUpdate?.(props);
+
+    // Detectar cambio de idioma
+    const currentLang = getCurrentLanguage();
+    if (this._currentLanguage !== currentLang) {
+      this._currentLanguage = currentLang;
+      
+      // Si hay un cocktail cargado, actualizar las instrucciones según el nuevo idioma
+      if (this._cocktail) {
+        this._updateInstructionsByLanguage();
+      }
+    }
+
     // Actualizar instrucciones cuando cambia el cocktail
     if (props.has('_cocktail') && this._cocktail) {
       this._updateInstructionsByLanguage();
@@ -94,7 +115,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           ? html` ${this._headerTpl} ${this._cocktailTpl} `
           : html`
             <md-circular-progress
-              aria-label="${'Loading...'}"
+              aria-label=${this.t(i18nKeys.loading)}
               value="0.5"
               indeterminate
             ></md-circular-progress>
@@ -113,7 +134,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
       >
         <div class="page-header-actions">
           <md-outlined-button
-            aria-label="${this._cocktail?.strCategory} category"
+            aria-label="${this.t(i18nKeys.categoryAriaLabel, { categoryName: this._cocktail?.strCategory })}"
             @click="${() =>
               this._cocktail?.strCategory &&
               this._handleNavigateTo('category', encodeURIComponent(this._cocktail?.strCategory.toLowerCase()))}"
@@ -122,7 +143,8 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           </md-outlined-button>
     
           <md-outlined-icon-button
-            aria-label="${'Add to favorites'}"
+            aria-label=${this.t(i18nKeys.addToFavoritesAriaLabel)}
+            aria-label-selected=${this.t(i18nKeys.removeFromFavoritesAriaLabel)}
             toggle
             @click="${(ev) => this._cocktail && this._addLikedCocktails(ev, this._cocktail)}"
             ?selected="${this._likedCocktails
@@ -145,7 +167,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
         </div>
 
         <div class="ingredients-list">
-          <h3>${'Ingredients'}</h3>
+          <h3>${this.t(i18nKeys.ingredients)}</h3>
           <ul>
             ${this._cocktail
               ? Object.keys(this._cocktail)
@@ -174,7 +196,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
         </div>
 
         <div class="cocktail-instructions">
-          <h3>${'Instructions'}</h3>
+          <h3>${this.t(i18nKeys.instructions)}</h3>
           ${this._cocktailInstructions.map(instruction => html` <p>${instruction}</p> `)}
         </div>
       </div>
@@ -191,7 +213,7 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
         aria-label="${this.t(i18nKeys.seeOnYouTube) || 'See recipe on YouTube'}"
       >
         <md-icon filled>smart_display</md-icon>
-        ${this.t(i18nKeys.seeOnYouTube) || 'See recipe on YouTube'}
+        ${this.t(i18nKeys.viewOnYoutube) || 'View cocktail on YouTube'}
       </a>
     `;
   }
@@ -220,13 +242,25 @@ export class CocktailPage extends PageTransitionsMixin(PageMixin(LitElement)) {
     }
   }
 
+  /**
+   * Actualiza las instrucciones del cocktail según el idioma actual
+   */
   _updateInstructionsByLanguage() {
     if (!this._cocktail) return;
+
+    const currentLang = this._currentLanguage || getCurrentLanguage();
     
     // Seleccionar las instrucciones según el idioma actual
     let instructions = this._cocktail.strInstructions; // inglés por defecto
     
+    if (currentLang === 'es' && this._cocktail.strInstructionsES) {
+      instructions = this._cocktail.strInstructionsES;
+    } else if (currentLang === 'fr' && this._cocktail.strInstructionsFR) {
+      instructions = this._cocktail.strInstructionsFR;
+    }
+    
     this._cocktailInstructions = instructions.split('\n');
+    console.log(`[CocktailPage] Instructions updated for language: ${currentLang}`);
   }
 
   onPageLeave() {
