@@ -1,12 +1,14 @@
 import { html, LitElement } from 'lit';
 import { PageController } from '@open-cells/page-controller';
-import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
+import { LocalizeMixin } from '@open-cells/localize';
+import { PageMixin } from '@open-cells/page-mixin';
 import styles from './favorite-cocktails-page.css.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
+import i18nKeys from './favorite-cocktails-page-i18n.js';
 
-export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitElement)) {
+export class FavoriteCocktailsPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitElement))) {
   static get is() {
     return 'favorite-cocktails-page';
   }
@@ -55,7 +57,7 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitEle
         ${this._headerTpl}
         ${this._likedCocktails && this._likedCocktails.size > 0
           ? this._likedCocktailsTpl
-          : html` <p class="no-favorites">${this.t(i18nKeys.noFavorite)}</p> `}
+          : html` <p class="no-favorites">${this.t(i18nKeys.noFavorites)}</p> `}
       </page-layout>
     `;
   }
@@ -64,7 +66,7 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(PageMixin(LitEle
     return html`
       <page-header
         navigateToHome=""
-        headerTitle="Favorite Cocktails (${this._likedCocktails ? this._likedCocktails.size : 0})"
+        headerTitle=${this.t(i18nKeys.title, { favoritesCount: this._likedCocktails ? this._likedCocktails.size : 0 })}
         @navigate-to="${(ev) => this._navigateTo(ev, ev.detail.destination, ev.detail.params)}"
       ></page-header>
     `;
