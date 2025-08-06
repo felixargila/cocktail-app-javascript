@@ -1,6 +1,7 @@
 import { html, LitElement, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
+import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageController } from '@open-cells/page-controller';
 import styles from './category-page.css.js';
@@ -14,8 +15,9 @@ import '@material/web/iconbutton/outlined-icon-button.js';
 import '@material/web/progress/circular-progress.js';
 import '../../components/page-layout/page-layout.js';
 import '../../components/page-header/page-header.js';
+import i18nKeys from './category-page-i18n.js';
 
-export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
+export class CategoryPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitElement))) {
   static get is() {
     return 'category-page';
   }
@@ -115,7 +117,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           ? html` ${this._headerTpl} ${this._categoriesTpl} `
           : html`
               <md-circular-progress
-                aria-label="Loading..."
+                aria-label=${this.t(i18nKeys.loading)}
                 value="0.5"
                 indeterminate
               ></md-circular-progress>
@@ -162,7 +164,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
                     </a>
                     <md-outlined-icon-button
                       md-outlined-icon-button
-                      aria-label="Add receipe to favorite"
+                      aria-label=${this.t(i18nKeys.addToFavorites)}
                       toggle
                       @click="${(ev) => this._addLikedCocktails(ev, cocktail)}"
                       ?selected="${Boolean(
@@ -178,7 +180,7 @@ export class CategoryPage extends PageTransitionsMixin(PageMixin(LitElement)) {
           `
         : html`
           <md-circular-progress
-            aria-label="Loading..."
+            aria-label=${this.t(i18nKeys.loading)}
             value="0.5"
             indeterminate
           ></md-circular-progress>
