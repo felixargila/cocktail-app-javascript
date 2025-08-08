@@ -2,13 +2,18 @@ import { getConfig } from '@open-cells/core';
 
 const {
   appConfig: {
-    cocktailsService: { basePath = undefined, userId = undefined, version = undefined } = {},
+    cocktailsService: {
+      actions = undefined,
+      basePath = undefined,
+      userId = undefined,
+      version = undefined,
+    } = {},
   } = {},
 } = getConfig();
 
 // endpoint url: https://www.thecocktaildb.com/api/json/{version}/{user}/list.php
 function getFetchUrl(param, paramValue) {
-  const data = new URL(`${basePath}/${version}/${userId}/list.php`);
+  const data = new URL(`${basePath}/${version}/${userId}/${actions.list}`);
   if (param && paramValue) {
     data.searchParams.set(param, paramValue);
   }
