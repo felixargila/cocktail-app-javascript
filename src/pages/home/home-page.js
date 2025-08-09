@@ -29,9 +29,9 @@ export class HomePage extends PageTransitionsMixin(LocalizeMixin(PageMixin(LitEl
 
   static get properties() {
     return {
-      _randomCocktail: { type: Object },
-      _categoriesList: { type: Array },
-      _likedCocktails: { type: Object },
+      _randomCocktail: { type: Object, attribute: false },
+      _categoriesList: { type: Array, attribute: false },
+      _likedCocktails: { type: Object, attribute: false },
     };
   }
 

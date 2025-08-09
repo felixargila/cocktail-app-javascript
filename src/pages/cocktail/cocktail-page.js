@@ -1,6 +1,5 @@
 import { html, LitElement, nothing } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { PageController } from '@open-cells/page-controller';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
@@ -24,18 +23,16 @@ export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
 
   static get properties() {
     return {
-      pageController: { type: Object },
-      _cocktailInstructions: { type: Array },
-      _cocktail: { type: Object },
-      _likedCocktails: { type: Object },
-      _currentLanguage: { type: String },
       params: { type: Object },
+      _cocktailInstructions: { type: Array, attribute: false },
+      _cocktail: { type: Object, attribute: false },
+      _likedCocktails: { type: Object, attribute: false },
+      _currentLanguage: { type: String, attribute: false },
     };
   }
 
   constructor() {
     super();
-    this.pageController = new PageController(this);
     this._cocktailInstructions = [];
     this._cocktail = null;
     this._likedCocktails = null;
@@ -51,7 +48,7 @@ export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
   connectedCallback() {
     super.connectedCallback();
 
-    this.pageController.subscribe('liked-cocktails', (data) => {
+    this.subscribe('liked-cocktails', (data) => {
       this._likedCocktails = data;
     });
     // Establecer idioma inicial
@@ -59,7 +56,7 @@ export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
   }
 
   disconnectedCallback() {
-    this.pageController.unsubscribe('liked-cocktails');
+    this.unsubscribe('liked-cocktails');
     super.disconnectedCallback();
   }
 
@@ -219,7 +216,7 @@ export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
   }
 
   _handleNavigateTo(destination, category) {
-    this.pageController.navigate(destination, { category });
+    this.navigate(destination, { category });
   }
 
   _addLikedCocktails(ev, cocktail) {
@@ -230,7 +227,7 @@ export class CocktailPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
       ? this._likedCocktails?.add(cocktail)
       : this._delete(cocktail, this._likedCocktails);
 
-    this.pageController.publish('liked-cocktails', this._likedCocktails);
+    this.publish('liked-cocktails', this._likedCocktails);
     this.requestUpdate();
   }
 

@@ -1,5 +1,4 @@
 import { html, LitElement } from 'lit';
-import { PageController } from '@open-cells/page-controller';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
@@ -17,16 +16,14 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(LocalizeMixin(Pa
     return [styles];
   }
 
-  static get properties() {}
   static get properties() {
     return {
-      _likedCocktails: { type: Object },
+      _likedCocktails: { type: Object, attribute: false },
     };
   }
 
   constructor() {
     super();
-    this.pageController = new PageController(this);
     this._likedCocktails = null;
     this._layout = null;
   }
@@ -34,14 +31,14 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(LocalizeMixin(Pa
   connectedCallback() {
     super.connectedCallback();
 
-    this.pageController.subscribe('liked-cocktails', (data) => {
+    this.subscribe('liked-cocktails', (data) => {
       this._likedCocktails = data;
       this.requestUpdate();
     });
   }
 
   disconnectedCallback() {
-    this.pageController.unsubscribe('liked-cocktails');
+    this.unsubscribe('liked-cocktails');
     super.disconnectedCallback();
   }
 
@@ -125,7 +122,7 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(LocalizeMixin(Pa
   _navigateTo(ev, destination, params = {}) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.pageController.navigate(
+    this.navigate(
       destination,
       params
     );
@@ -139,7 +136,7 @@ export class FavoriteCocktailsPage extends PageTransitionsMixin(LocalizeMixin(Pa
       ? this._likedCocktails?.add(cocktail)
       : this._delete(cocktail.idDrink, this._likedCocktails);
 
-    this.pageController.publish('liked-cocktails', this._likedCocktails);
+    this.publish('liked-cocktails', this._likedCocktails);
     this.requestUpdate();
   }
 

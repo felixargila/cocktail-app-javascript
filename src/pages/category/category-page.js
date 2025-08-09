@@ -3,7 +3,6 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
 import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
-import { PageController } from '@open-cells/page-controller';
 import styles from './category-page.css.js';
 import {
   getCategoriesList,
@@ -24,9 +23,9 @@ export class CategoryPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
 
   static get properties() {
     return {
-      _currentCategory: { type: String },
-      _cocktailsList: { type: Array },
-      _likedCocktails: { type: Object },
+      _currentCategory: { type: String, attribute: false },
+      _cocktailsList: { type: Array, attribute: false },
+      _likedCocktails: { type: Object, attribute: false },
     };
   }
 
@@ -36,7 +35,6 @@ export class CategoryPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
 
   constructor() {
     super();
-    this.pageController = new PageController(this);
     this._layout = null;
     this._currentCategory = null;
     this._cocktailsList = null;

@@ -1,5 +1,4 @@
 import { html, LitElement } from 'lit';
-import { PageController } from '@open-cells/page-controller';
 import { LocalizeMixin } from '@open-cells/localize';
 import { PageMixin } from '@open-cells/page-mixin';
 import { PageTransitionsMixin } from '@open-cells/page-transitions';
@@ -15,7 +14,6 @@ export class NotFoundPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
 
   constructor() {
     super();
-    this.pageController = new PageController(this);
     this._layout = null;
   }
 
@@ -44,7 +42,7 @@ export class NotFoundPage extends PageTransitionsMixin(LocalizeMixin(PageMixin(L
   _navigateTo(ev, destination, params = {}) {
     ev.preventDefault();
     ev.stopPropagation();
-    this.pageController.navigate(
+    this.navigate(
       destination,
       params
     );
