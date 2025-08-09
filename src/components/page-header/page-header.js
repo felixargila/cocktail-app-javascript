@@ -32,7 +32,7 @@ export class PageHeader extends LocalizeMixin(LitElement) {
               <li>
                 <md-outlined-button
                   aria-label="${ifDefined(this.t(i18nKeys.options.backToHome) || undefined)}"
-                  @click="${(ev) => this._navigateTo(ev, 'home')}"
+                  @click="${(ev) => this._onButtonClicked(ev, 'home')}"
                 >
                   <md-icon filled slot="icon">arrow_back</md-icon>
                   <span class="md-outlined-button-text">${this.t(i18nKeys.options.backToHome)}</span>
@@ -47,7 +47,7 @@ export class PageHeader extends LocalizeMixin(LitElement) {
                 <md-outlined-button
                   aria-label="${ifDefined(this.t(i18nKeys.options.favoriteCocktails) || undefined)}"
                   href="#!/favorite-cocktails"
-                  @click="${(ev) => this._navigateTo(ev, 'favorite-cocktails', {})}"
+                  @click="${(ev) => this._onButtonClicked(ev, 'favorite-cocktails', {})}"
                 >
                   <md-icon filled slot="icon">favorite</md-icon>
                   ${this.likedCocktailsCount}
@@ -64,7 +64,7 @@ export class PageHeader extends LocalizeMixin(LitElement) {
     `;
   }
 
-  _navigateTo(ev, destination, params = {}) {
+  _onButtonClicked(ev, destination, params = {}) {
     // Emitir evento personalizado para que el componente padre maneje la navegación
     this.dispatchEvent(new CustomEvent('navigate-to', {
       bubbles: true,
